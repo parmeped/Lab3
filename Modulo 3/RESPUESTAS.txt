@@ -1,0 +1,5 @@
+3)
+El comportamiento observado es que se guardan los productos "creados" como una nueva linea en el archivo "productos.txt", y luego se "consumen" al momento de leerlos.
+4)
+Siempre crea el mismo lote de productos, y siempre crea 10. Si hay un "stock" previo de productos, es eliminado (al usar "w" para leer en lugar de "a"). Para compensar el programa
+ debería recordar también el último id del producto. 
