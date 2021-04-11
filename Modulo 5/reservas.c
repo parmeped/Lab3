@@ -172,7 +172,9 @@ int main()
       if (cant_producto > 0)
       {
         printf("\nBORRAMOS\n");
-        sprintf(part_char, "%d", partida);
+        printf("%d", &partida);
+        sprintf(part_char, "%d", &partida);
+        strcpy(test, strcat(strcat("lote", part_char), ".dat"));
         rename("lote.dat", strcat(strcat("lote", part_char), ".dat"));
         cant_producto = 0;
       }
