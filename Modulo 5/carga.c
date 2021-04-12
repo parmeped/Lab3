@@ -3,6 +3,7 @@
 #include <string.h>
 #include <sys/ipc.h>
 #include <sys/sem.h>
+#include <unistd.h>
 
 #define CANTIDAD_PARTIDA 11
 #define INTERVALO_PRODUCTO 100
@@ -51,7 +52,7 @@ void inicia_semaforo(int id_semaforo, int valor)
 void levanta_semaforo(int id_semaforo)
 {
   struct sembuf operacion;
-  printf("Levanta SEMAFORO \n");
+  printf("Levanta semaforo \n");
   operacion.sem_num = 0;
   operacion.sem_op = 1; 
   operacion.sem_flg = 0;
@@ -62,7 +63,7 @@ void levanta_semaforo(int id_semaforo)
 void espera_semaforo(int id_semaforo)
 {
   struct sembuf operacion;
-  printf("Espera SEMAFORO \n");
+  printf("Espera semaforo \n");
   operacion.sem_num = 0;
   operacion.sem_op = -1; 
   operacion.sem_flg = 0;
@@ -79,7 +80,7 @@ struct flight
 int main()
 {
   char cadena[LARGO]; 
-  int nro_producto = 0, nro_partida = 0;
+  int nro_producto = 0, nro_partida = 0, vuelo = CANTIDAD_PARTIDA + 1, j, partida_anterior = 0;
   FILE *productor;
 
   struct flight vuelos[CANTIDAD_PARTIDA] =
@@ -97,27 +98,38 @@ int main()
     {1010, 0, "India"}
   };
 
-  int id_semaforo;
-
-  id_semaforo = creo_semaforo();
+  int id_semaforo = creo_semaforo();
   inicia_semaforo(id_semaforo, VERDE);
 
-  while (1)
-  {
-    espera_semaforo(id_semaforo);
+  while (vuelo != 0 && vuelo != -1 && (vuelo < 1 || vuelo > CANTIDAD_PARTIDA)) {
+    printf("Ingrese el numero de vuelo de entre los disponibles (-1 para aleatorio, 0 para salir): \n");
+    j = 1;
+    for (int i = 0; i < CANTIDAD_PARTIDA; i++) {      
+      printf("Id: %d, Vuelo: %d, Destino: %s \n", j, vuelos[i].vuelo, vuelos[i].destino);
+      j++;
+    }
+    scanf("%s", cadena);
+    vuelo = atoi(cadena);    
+    printf("%d", vuelo);
+  }
 
-    printf("\nPRODUCIMOS-PARTIDA-%04d\n", nro_partida);
+  if (vuelo > 0) {
+    espera_semaforo(id_semaforo);
+  }
+
+  // TODO: Producir aleatoriamente
+  while (vuelo == -1) {
+    espera_semaforo(id_semaforo);
     productor = fopen("lote.dat", "a");
     if (productor != NULL)
     {
       for (nro_producto = 0; nro_producto < CANTIDAD_PARTIDA; nro_producto++)
       {
-         printf("PARTIDA:%04d VUELO:%04d DESTINO:%s \n", nro_partida, vuelos[nro_producto].vuelo, vuelos[nro_producto].destino);
-         fprintf(productor, "PARTIDA:%04d VUELO:%04d DESTINO:%s \n", nro_partida, vuelos[nro_producto].vuelo, vuelos[nro_producto].destino);
-         usleep(INTERVALO_PRODUCTO * 1000);
+        printf("PARTIDA:%04d VUELO:%04d DESTINO:%s \n", nro_partida, vuelos[nro_producto].vuelo, vuelos[nro_producto].destino);
+        fprintf(productor, "PARTIDA:%04d VUELO:%04d DESTINO:%s \n", nro_partida, vuelos[nro_producto].vuelo, vuelos[nro_producto].destino);
+        usleep(INTERVALO_PRODUCTO * 1000);
       }
       fclose(productor);
-      nro_partida++;
       printf("\nESPERAMOS\n");
     }
     else
@@ -127,6 +139,48 @@ int main()
 
     levanta_semaforo(id_semaforo);
     usleep(INTERVALO_PARTIDA * 1000);
+  }
+
+  // Producir normal
+  while (vuelo != 0)
+  {
+    productor = fopen("lote.dat", "a");    
+    if (productor != NULL)
+    {
+      printf("PARTIDA:%04d VUELO:%04d DESTINO:%s \n", nro_partida, vuelos[vuelo - 1].vuelo, vuelos[vuelo - 1].destino);
+      fprintf(productor, "PARTIDA:%04d VUELO:%04d DESTINO:%s \n", nro_partida, vuelos[vuelo - 1].vuelo, vuelos[vuelo - 1].destino);
+      usleep(INTERVALO_PRODUCTO * 1000);
+      vuelo = CANTIDAD_PARTIDA + 1;
+      fclose(productor);      
+    }
+    else
+    {
+      perror("Error al abrir lote.dat");
+    }
+
+    while (vuelo != 0 && (vuelo < 1 || vuelo > CANTIDAD_PARTIDA)) {
+      printf("Ingrese el numero de vuelo de entre los disponibles (0 para salir): \n");
+      j = 1;
+      for (int i = 0; i < CANTIDAD_PARTIDA; i++) {      
+        printf("Id: %d, Vuelo: %d, Destino: %s \n", j, vuelos[i].vuelo, vuelos[i].destino);
+        j++;
+      }
+      scanf("%s", cadena);
+      vuelo = atoi(cadena);      
+    }    
+    while (vuelo != 0 && strcmp("Y", cadena) != 0 && strcmp("N", cadena) != 0) {
+      printf("Desea generar una nueva partida? (Y/N) \n");
+      scanf("%s", cadena);
+      if (strcmp("Y", cadena) == 0) {
+        nro_partida++;
+      }
+    }
+    if (vuelo != 0 && nro_partida != partida_anterior) {      
+      partida_anterior = nro_partida;
+      usleep(INTERVALO_PARTIDA * 1000);
+      levanta_semaforo(id_semaforo);
+      espera_semaforo(id_semaforo);
+    }
   };
   return 0;
 }

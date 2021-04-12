@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/ipc.h>
@@ -99,7 +100,8 @@ int main()
   FILE *consumidor;
 
   int id_semaforo = creo_semaforo();  
-  char *e, destino[30], part_char[10];
+  char *e;
+  char destino[50], part_char[50], test[100], buffer[50];
   int index, delimiter, partida, vuelo, i = 0;
 
   while (1)
@@ -109,7 +111,7 @@ int main()
     consumidor = fopen("lote.dat", "r");
     if (consumidor != NULL)
     {
-      printf("\nCONSUMIMOS\n");
+      printf("\nCONSUMIMOS!!\n");
       while (!feof(consumidor))
       {
 
@@ -172,10 +174,10 @@ int main()
       if (cant_producto > 0)
       {
         printf("\nBORRAMOS\n");
-        printf("%d", &partida);
-        sprintf(part_char, "%d", &partida);
-        strcpy(test, strcat(strcat("lote", part_char), ".dat"));
-        rename("lote.dat", strcat(strcat("lote", part_char), ".dat"));
+        sprintf(part_char, "%04d", partida);
+        strcpy(buffer, "lote");
+        strcat(buffer, part_char);
+        rename("lote.dat", strcat(buffer, ".dat"));
         cant_producto = 0;
       }
       for(int j = 0; j < 11; j++) {
