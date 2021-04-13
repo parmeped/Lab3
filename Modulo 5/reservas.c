@@ -116,7 +116,8 @@ int main()
       {
 
         fscanf(consumidor, "PARTIDA:%04d VUELO:%04d DESTINO:%s \n", &partida, &vuelo, destino);
-
+        printf("PARTIDA:%04d VUELO:%04d DESTINO:%s \n", partida, vuelo, destino);
+        
         switch(vuelo) {
           case(1000):
             i = 0;

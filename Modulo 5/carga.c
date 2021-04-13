@@ -52,7 +52,7 @@ void inicia_semaforo(int id_semaforo, int valor)
 void levanta_semaforo(int id_semaforo)
 {
   struct sembuf operacion;
-  printf("Levanta semaforo \n");
+  printf("Aguarde por favor... \n");
   operacion.sem_num = 0;
   operacion.sem_op = 1; 
   operacion.sem_flg = 0;
@@ -79,7 +79,7 @@ struct flight
 
 int main()
 {
-  char cadena[LARGO]; 
+  char cadena[LARGO], nombre[LARGO]; 
   int nro_producto = 0, nro_partida = 0, vuelo = CANTIDAD_PARTIDA + 1, j, partida_anterior = 0;
   FILE *productor;
 
@@ -110,7 +110,11 @@ int main()
     }
     scanf("%s", cadena);
     vuelo = atoi(cadena);    
-    printf("%d", vuelo);
+    if (vuelo == 0) {
+      break;
+    }
+    printf("Ingrese el nombre del pasajero \n");
+    scanf("%s", nombre);
   }
 
   if (vuelo > 0) {
@@ -144,10 +148,13 @@ int main()
   // Producir normal
   while (vuelo != 0)
   {
+    // Abro archivo, guardo vuelo.
     productor = fopen("lote.dat", "a");    
     if (productor != NULL)
     {
-      printf("PARTIDA:%04d VUELO:%04d DESTINO:%s \n", nro_partida, vuelos[vuelo - 1].vuelo, vuelos[vuelo - 1].destino);
+      printf("PARTIDA:%04d VUELO:%04d DESTINO:%s NOMBRE:%s \n", nro_partida, vuelos[vuelo - 1].vuelo, vuelos[vuelo - 1].destino, nombre);
+      
+      // no se guarda el nombre ya que no es requisito.
       fprintf(productor, "PARTIDA:%04d VUELO:%04d DESTINO:%s \n", nro_partida, vuelos[vuelo - 1].vuelo, vuelos[vuelo - 1].destino);
       usleep(INTERVALO_PRODUCTO * 1000);
       vuelo = CANTIDAD_PARTIDA + 1;
@@ -156,6 +163,21 @@ int main()
     else
     {
       perror("Error al abrir lote.dat");
+    }
+
+    // Chequeo partida
+    while (vuelo != 0 && strcmp("Y", cadena) != 0 && strcmp("N", cadena) != 0) {
+      printf("Desea generar una nueva partida? (Y/N) \n");
+      scanf("%s", cadena);
+      if (strcmp("Y", cadena) == 0) {
+        nro_partida++;
+      }
+    }    
+    if (vuelo != 0 && nro_partida != partida_anterior) {      
+      partida_anterior = nro_partida;
+      usleep(INTERVALO_PARTIDA * 1000);
+      levanta_semaforo(id_semaforo);
+      espera_semaforo(id_semaforo);
     }
 
     while (vuelo != 0 && (vuelo < 1 || vuelo > CANTIDAD_PARTIDA)) {
@@ -167,20 +189,12 @@ int main()
       }
       scanf("%s", cadena);
       vuelo = atoi(cadena);      
-    }    
-    while (vuelo != 0 && strcmp("Y", cadena) != 0 && strcmp("N", cadena) != 0) {
-      printf("Desea generar una nueva partida? (Y/N) \n");
-      scanf("%s", cadena);
-      if (strcmp("Y", cadena) == 0) {
-        nro_partida++;
+      if (vuelo == 0) {
+        break;
       }
-    }
-    if (vuelo != 0 && nro_partida != partida_anterior) {      
-      partida_anterior = nro_partida;
-      usleep(INTERVALO_PARTIDA * 1000);
-      levanta_semaforo(id_semaforo);
-      espera_semaforo(id_semaforo);
-    }
+      printf("Ingrese el nombre del pasajero \n");
+      scanf("%s", nombre);
+    }    
   };
   return 0;
 }
