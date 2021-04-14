@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
-#include "random.h" // ya incluye constants.h
-#include "shared.h"
+#include "../random.h" // ya incluye constants.h
+#include "../shared.h"
 
 int main()
 {
