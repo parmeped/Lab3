@@ -1,7 +1,4 @@
-#include <stdio.h>
 #include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
 #include <sys/ipc.h>
 #include <sys/sem.h>
 #include "../constants.h"
@@ -9,7 +6,7 @@
 
 int main()
 {
-  char cadena[LARGO];
+  char cadena[CADENA_L];
   int cant_producto = 0;
   FILE *consumidor;
 
@@ -88,7 +85,7 @@ int main()
       fclose(consumidor);
       if (cant_producto > 0)
       {
-        printf("\nBORRAMOS\n");
+        printf("\n BORRAMOS \n");
         sprintf(part_char, "%04d", partida);
         strcpy(buffer, "lote");
         strcat(buffer, part_char);
@@ -104,10 +101,10 @@ int main()
       perror("Error al abrir lote.dat");
     }
 
-    printf("\nESPERAMOS\n");
+    printf("\n ESPERAMOS \n");
 
     levanta_semaforo(id_semaforo);
-    usleep(300);
+    usleep(INTERVALO_RESERVAS * 1000);
   };
   return 0;
 }

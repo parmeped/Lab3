@@ -1,12 +1,10 @@
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
+// Imports en constants
 #include "../random.h" // ya incluye constants.h
 #include "../shared.h"
 
 int main()
 {
-  char cadena[LARGO], nombre[LARGO]; 
+  char cadena[CADENA_L], nombre[CADENA_L]; 
   int nro_producto = 0, nro_partida = 0, vuelo = CANTIDAD_PARTIDA + 1, j, partida_anterior = 0, *arrayPtr, rand_aux;
   FILE *productor;
 
@@ -48,14 +46,14 @@ int main()
         printf("PARTIDA:%04d VUELO:%04d DESTINO:%s AUX:%d \n", nro_partida, vuelos[rand_aux].vuelo, vuelos[rand_aux].destino, rand_aux);
         fprintf(productor, "PARTIDA:%04d VUELO:%04d DESTINO:%s \n", nro_partida, vuelos[rand_aux].vuelo, vuelos[rand_aux].destino);
       }
-      usleep(INTERVALO_PRODUCTO * 500);
+      usleep(INTERVALO_PRODUCTO * 1000);
       fclose(productor);
     }
     else
     {
       perror("Error al abrir lote.dat");
     }
-    usleep(INTERVALO_PARTIDA * 500);
+    usleep(INTERVALO_PARTIDA * 1000);
     printf("\n Finalizó la carga aleatoria de %d vuelos. Desea cargar una nueva partida? (Y) \n", CANTIDAD_ALEATORIA);
     scanf("%s", cadena);
     if (strcmp("Y", cadena) == 0) {

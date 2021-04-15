@@ -4,10 +4,6 @@
 
 key_t creo_clave()
 {
-  // Igual que en cualquier recurso compartido (memoria compartida, semaforos
-  // o colas) se obtien una clave a partir de un fichero existente cualquiera
-  // y de un entero cualquiera. Todos los procesos que quieran compartir este
-  // semaforo, deben usar el mismo fichero y el mismo entero.
   key_t clave;
   clave = ftok("/bin/ls", 33);
   if (clave == (key_t)-1)
@@ -18,11 +14,9 @@ key_t creo_clave()
   return clave;
 }
 
-//funcion que crea el semaforo
 int creo_semaforo()
 {
   key_t clave = creo_clave();
-  //PRIMER PARAMETRO ES LA CLAVE, EL SEGUNDO CANT SEMAFORO, EL TERCERO 0600 LO UTILIZA CUALQUIERA, IPC ES CONSTANTE (VEA SEMAFORO)
   int id_semaforo = semget(clave, 1, 0600 | IPC_CREAT);
   if (id_semaforo == -1)
   {
@@ -32,13 +26,11 @@ int creo_semaforo()
   return id_semaforo;
 }
 
-//inicia el semaforo
 void inicia_semaforo(int id_semaforo, int valor)
 {
   semctl(id_semaforo, 0, SETVAL, valor);
 }
 
-//levanta el semaforo
 void levanta_semaforo(int id_semaforo)
 {
   struct sembuf operacion;
@@ -49,7 +41,6 @@ void levanta_semaforo(int id_semaforo)
   semop(id_semaforo, &operacion, 1);
 }
 
-//espera semaforo
 void espera_semaforo(int id_semaforo)
 {
   struct sembuf operacion;
