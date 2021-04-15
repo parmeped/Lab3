@@ -58,10 +58,10 @@ int main()
     scanf("%s", cadena);
     if (strcmp("Y", cadena) == 0) {
       nro_partida++;
-      levanta_semaforo(id_semaforo);
     } else {
       vuelo = 0;
     }
+    levanta_semaforo(id_semaforo);
   }
 
   // Producir normal

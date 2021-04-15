@@ -17,7 +17,6 @@ int main()
 
   while (1)
   {    
-    espera_semaforo(id_semaforo);
 
     consumidor = fopen("lote.dat", "r");
     if (consumidor != NULL)
