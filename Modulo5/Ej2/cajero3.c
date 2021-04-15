@@ -12,7 +12,6 @@ int main() {
     int id_semaforo = creo_semaforo();
     char nombre_archivo[CADENA_S] = "";
     inicia_semaforo(id_semaforo, VERDE);
-    espera_semaforo(id_semaforo);
     strcat(strcat(strcat(nombre_archivo, NOMBRE_ARCHIVO), NRO_CAJERO), EXTENSION_ARCHIVO);
 
     while (1)
@@ -40,8 +39,8 @@ int main() {
             perror("Error al abrir archivo");
         }
         tiempo_espera = randomNumber(TIEMPO_MIN, TIEMPO_MAX, rand_previo);
-        usleep(tiempo_espera * 1000);
         levanta_semaforo(id_semaforo);
+        usleep(tiempo_espera * 1000);
         espera_semaforo(id_semaforo);
     };
   return 0;

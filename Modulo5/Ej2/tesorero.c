@@ -8,7 +8,7 @@ void revisarCajeros(int cajero_id, struct cajero *cajero_total) {
     char archivo_org[CADENA_S] = "", arch_renom[CADENA_S] = "", buffer[CADENA_S] = "";
     
     // buffer del cajero_id
-    sprintf(buffer, "%d", cajeros[cajero_id].cajero_id + 1 );
+    sprintf(buffer, "%d", cajeros[cajero_id].cajero_id);
     // nombre archivo original
     strcat(strcat(strcat(archivo_org, NOMBRE_ARCHIVO), buffer), EXTENSION_ARCHIVO);
 
@@ -98,7 +98,6 @@ int main()
 
     while (1)
     {    
-        //espera_semaforo(id_semaforo);
 
         for (int i = 0; i < CANTIDAD_CAJEROS; i++) {
             revisarCajeros(i, &cajero_total);
