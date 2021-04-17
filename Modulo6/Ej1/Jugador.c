@@ -30,6 +30,9 @@ int main() {
                     array[nro_pensado] = nro_pensado;
                     memoria[0].numero_pensado = nro_pensado;
                     buscar_nro = 0;
+                } else {
+                    printf("Numero ya usado! Buscando otro... \n");
+                    usleep(TIEMPO_ESPERAx2 * 1000);
                 }
             }
             buscar_nro = 1;
@@ -41,7 +44,12 @@ int main() {
         // Agrego tiempo espera para evitar tantas llamadas
         usleep(TIEMPO_ESPERA * 1000);
     }
-    
+    printf("Numeros intentados: \n");
+    for(int i = 1; i < RANDOM_MAX + 1; i++) {
+        if (array[i] != 0) {
+            printf("Numero %d \n", array[i]);
+        }
+    }
     printf("Felicidades %s, encontraste el número luego de %d intentos! \n", memoria[0].nombre_jugador, intentos);
     shmdt ((char *)memoria);
 	shmctl (id_memoria, IPC_RMID, (struct shmid_ds *)NULL);

@@ -16,7 +16,7 @@ int main() {
         espera_semaforo(id_semaforo);
 
         if (memoria[0].numero_pensado != 0 && memoria[0].estado_acierto == 0) {
-            printf("Pensaste en %d...", memoria[0].numero_pensado);
+            printf("Pensaste en %d... \n", memoria[0].numero_pensado);
             if (memoria[0].numero_pensado == pienso_nro_local) {
                 printf("Acertaste! \n");
                 memoria[0].estado_acierto = 1;
