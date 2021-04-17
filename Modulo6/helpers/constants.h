@@ -4,6 +4,10 @@
 #define RANDOM_MIN 1
 #define RANDOM_MAX 99
 #define LARGO_NOMBRE 50
+#define CANTIDAD 1
+#define TIEMPO_ESPERA 500
+
+typedef struct juego ju;
 
 struct juego {
     char nombre_jugador[LARGO_NOMBRE];
