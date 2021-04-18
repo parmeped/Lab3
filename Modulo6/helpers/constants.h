@@ -1,3 +1,7 @@
+#define CADENA_S 50
+#define CONST_SALIDA "Y"
+
+// Ej 1
 #define CLAVE_BASE 33 
 #define ROJO 0
 #define VERDE 1
@@ -8,7 +12,6 @@
 #define TIEMPO_ESPERA 500
 #define TIEMPO_ESPERAx2 1000
 
-// Ej 1
 typedef struct juego ju;
 
 struct juego {
