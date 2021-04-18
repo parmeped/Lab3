@@ -5,6 +5,7 @@
 #include <sys/ipc.h>
 #include <sys/sem.h>
 #include <time.h>
+#include <string.h>
 
 #include "constants.h"
 
@@ -52,7 +53,7 @@ void inicia_semaforo(int id_semaforo, int valor)
 void levanta_semaforo(int id_semaforo)
 {
 	struct sembuf operacion;
-	printf("Levanta SEMAFORO \n");
+	printf("SEM UP \n");
 	operacion.sem_num = 0;
 	operacion.sem_op = 1; //incrementa el semaforo en 1
 	operacion.sem_flg = 0;
@@ -63,7 +64,7 @@ void levanta_semaforo(int id_semaforo)
 void espera_semaforo(int id_semaforo)
 {
 	struct sembuf operacion;
-	printf("Espera SEMAFORO \n");
+	printf("SEM STOP \n");
 	operacion.sem_num = 0;
 	operacion.sem_op = -1; //decrementa el semaforo en 1
 	operacion.sem_flg = 0;

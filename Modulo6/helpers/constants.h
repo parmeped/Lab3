@@ -23,3 +23,22 @@ struct juego {
 #define AUTOS_MIN 400
 #define AUTOS_MAX 600
 #define ARCHIVO_PEAJE "peajes.dat"
+ 
+
+
+// Ej 3
+
+const char* NOMBRES_COLCHONES[] = {"PIERO", "SUAVESTAR", "CANNON", "SIMMONS", "BELMO"};
+#define CANTIDAD_COLCHONES 5
+#define TIEMPO_ESPERA_COLCHON 500
+#define VENTA_MIN 1
+#define VENTA_MAX 5
+
+typedef struct colchon col;
+
+struct colchon {
+    char nombre[LARGO_NOMBRE];
+    int codigo;
+    int cantidad;
+};
+
