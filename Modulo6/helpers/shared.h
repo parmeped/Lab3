@@ -103,6 +103,6 @@ void* creo_memoria(int size, int* r_id_memoria, int clave_base)
 
 int randomNumber(int min, int max)
 {
-  srand(time(NULL));
-  return (rand() % (max - min + 1)) + min;
+  	srand(time(NULL));
+  	return (rand() % (max - min + 1)) + min;
 }

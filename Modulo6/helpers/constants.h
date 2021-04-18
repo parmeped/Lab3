@@ -6,7 +6,9 @@
 #define LARGO_NOMBRE 50
 #define CANTIDAD 1
 #define TIEMPO_ESPERA 500
+#define TIEMPO_ESPERAx2 1000
 
+// Ej 1
 typedef struct juego ju;
 
 struct juego {
@@ -14,3 +16,10 @@ struct juego {
     int numero_pensado; // 0 = undefined; 0 > n < 100 a verificar
     int estado_acierto; // 0 = false; 1 = true
 };
+
+// Ej 2
+#define PEAJE_MIN 100
+#define PEAJE_MAX 5000
+#define AUTOS_MIN 400
+#define AUTOS_MAX 600
+#define ARCHIVO_PEAJE "peajes.dat"
