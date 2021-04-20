@@ -165,7 +165,32 @@ para copiar texto a numero, utilizar atoi(cadena)
 ó 
     sizeof(cadena)
 
-# Posix
+# Sistema en tiempo real
 Un sistema en tiempo real se define como uno que debe responder ante estimulos generados por el entorno dentro de un periodo de tiempo finito especificado.
 Caracteristicas:
 
+- Interactúan con el entorno (mundo físico), adquiriendo estímulos y estados del entorno y generando una acción sobre dicho entorno.
+- El tiempo de respuesta es un aspecto crítico.
+- Suficientemente  rápido  para  cumplir  los requerimientos, pero el que un sistema sea rápido no implica que éste sea de tiempo real.
+- La rapidez de un sistema de tiempo real está fijada por la naturaleza de los estímulos con los que tiene que tratar, la cual puede variar de unas     aplicaciones a otras. 
+- Tiempo real significa trabajar con aspectos del sistema como distribución física de los  componentes,  manejo  de  estímulos  impredecibles,  fallos  en  los componentes, incertidumbre acerca del entorno, y el efecto de estos aspectos sobre el rendimiento y robustez del sistema
+
+Entorno: 
+Activo: comprende los operadores que intervienen en el comportamiento del sistema modificando el modo de operación. 
+Pasivo: comprende a los usuarios que están solamente interesados en el servicio proporcionado y al ambiente exterior que no tiene nada que ver con la existencia del sistema.
+Un sistema en tiempo real debe ser tolerante a fallos, y en caso de fallo existen dos tipos:
+- Con parada segura => fail-safe: En caso de fallo colocan al sistema en un estado seguro
+- Con degradacion aceptable => fail-soft: Presentan pérdida parcial de funcionalidad en caso de falla, continuan funcionando a pesar de ello.
+
+Arquitectura:
+Controlada por eventos: Espera un evento externo y responde adecuadamente. Perfecto para eventos externos no regulares. 
+Controlada por tiempo: De acuerdo a los ciclos de reloj del sistema. Cuando se requiere tareas periodicas. Mas sencillos y robustos.
+
+# Posix
+Corresponde a Portable Operating System Interface. 
+Estandar orientado a facilitar la creacion de aplicaciones confiables y portables. La mayor parte de las distros de UNIX cumplen este estandar. Intenta estandarizar la interfaz de usuario para que las aplicaciones sean multi-plataforma. El principal objetivo es la portabilidad de aplicaciones al
+nivel del codigo fuente, simplemente recompilando.
+
+- Sincronizacion de procesos
+
+Semaforos: POSIX.4 define funciones para permitir la sincronizacion de procesos.
