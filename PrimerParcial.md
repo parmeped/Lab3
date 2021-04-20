@@ -98,3 +98,74 @@ HTOP [opciones] =>
 Extra: 
     Ctrl + z: Pausa el proceso, se continua con fg. Se puede ver el estado y recursos compartidos mientras.
 
+# Random
+En c se utiliza la funcion Rand(), que devuelve entre 0 y RAND_MAX. para obtener entre 0 y N, se debe llamar:
+rand() % (N + 1) => devuelve el módulo de la operacion y por ende un numero entre 0 y N. Para hacerlo entre M y N, se llama así:
+rand() % (N - M + 1) + M
+
+rand() calcula los numeros en base a un seed, y una vez compilado, devuelve siempre los mismos. Para evitar esto se llama a la funcion srand(), y 
+se le suele pasar como seed el tiempo => srand(time(NULL)). Se la llama SOLO una vez al inicio de codigo.
+
+# Parametro
+Para pasar parametros por consola, se llama via => int main(argc, char *argv[]). el primero indica el nro total de parametros, el segundo son los parametros
+en si. el primer parametro contiene el nombre del programa.
+
+# Archivos
+Antes de poder leer/modificar/escribir un archivo, es necesario abrirlo => 
+FILE *archivo; 
+archivo = fopen(char *nombre, char *modo)
+Esto devuelve un puntero a una estructura que contiene informacion necesaria para manejar dicho archivo. Como todo, es necesario liberar recursos al finalizar
+su utilizacion (fclose(archivo));
+
+# Modo de apertura de archivo 
+w: write; Si existe se elimina
+r: read; Debe existir, sino error
+a: append; Escritura al final, si no existe se crea vacio
+w+: Lectura y escritura; Si existe se elimina
+r+: Lectura y escritura; Si no existe se crea vacio
+a+: Lectura y escritura al final; Si no existe se crea vacio
+
+Si hay un error, fopen() devuelve NULL, por lo que siempre hay que validar archivo != NULL
+
+# Operaciones sobre archivo
+Leer valores con un determinado formato y guardarlos en variables:
+    fscanf(archivo, "PARTIDA:%04d VUELO:%04d DESTINO:%s \n", &partida, &vuelo, destino);
+Escribir valores con un determinado formato:
+    fprintf(archivo, "PARTIDA:%04d VUELO:%04d DESTINO:%s \n", nro_partida, vuelos[rand_aux].vuelo, vuelos[rand_aux].destino);
+
+Para saber si se ha llegado al final del archivo, existe la funcion:
+    feof(archivo);
+Esta devuelve 0 cuando llega al final, por lo que se puede negar !feof(archivo) para operar mientras no termine el archivo.
+
+# Cadenas texto
+Para trabajar con cadenas de texto, es necesario incluir "string.h". No existe el tipo dato string en C, por lo que se declara una cadena de char
+de un largo determinado => char cadena[LARGO]. La longitud es de LARGO - 1 caracteres, ya que el ultimo se reserva para finalizar la cadena. 
+NO SE PUEDE asignar caracteres a una cadena => cadena = "test". Es necesario utilizar los siguientes comandos:
+- teclado:
+    scanf("%s", cadena) 
+- copiando:
+    strcpy(cadena, "test")
+- con sprintf: => no necesita "string.h"
+    sprintf(cadena, "test")
+
+para copiar desde una cadena hacia otra, se puede utilizar strcpy o sprintf con un tecer parametro:
+    sprintf(cadena, "%s", cadena2)
+sprintf puede ser usada tambien para copiar un decimal u otro tipo, a texto:
+    sprintf(cadena, "%d", numero)
+para copiar texto a numero, utilizar atoi(cadena)
+
+- comparar:
+    strcmp(cadena1, cadena2) => 0 iguales, 1 no.
+- concatenar: 
+    strcat(cadena1, cadena2)
+ó:
+    sprintf(cadena, "%s, %d", cadena1, numero)
+- cantidad caracteres: 
+    strlen(cadena)
+ó 
+    sizeof(cadena)
+
+# Posix
+Un sistema en tiempo real se define como uno que debe responder ante estimulos generados por el entorno dentro de un periodo de tiempo finito especificado.
+Caracteristicas:
+
