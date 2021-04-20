@@ -194,3 +194,27 @@ nivel del codigo fuente, simplemente recompilando.
 - Sincronizacion de procesos
 
 Semaforos: POSIX.4 define funciones para permitir la sincronizacion de procesos.
+
+# Snippets
+
+// Levantar memoria
+col *colchones = NULL; // Puntero para struct. (Es un array, pero luego se accede simplemente como array)
+int id_memoria;
+
+int id_semaforo = creo_semaforo(); // creo semaforo, en los espera y libera se pasa el id_semaforo
+inicia_semaforo(id_semaforo, VERDE);
+colchones = (col*)creo_memoria(sizeof(col)*CANTIDAD_COLCHONES, &id_memoria, CLAVE_BASE); 
+
+// Liberar memoria 
+shmdt ((char *)vehiculos_en_cola);
+shmctl (id_memoria, IPC_RMID, (struct shmid_ds *)NULL);
+
+// Lectura archivo
+void guardarLiberaciones(int liberaciones) {
+    FILE *archivo;
+    archivo = fopen(ARCHIVO_PEAJE, "w+");
+    if (archivo != NULL) {
+        fprintf(archivo, "Cantidad de liberaciones de vias: %d \n", liberaciones);
+    }
+    fclose(archivo);
+}
