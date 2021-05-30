@@ -7,6 +7,7 @@
 #include <time.h>
 #include <string.h>
 #include <sys/msg.h>
+#include <stdbool.h>
 
 #include "constants.h"
 
@@ -170,4 +171,36 @@ void imprimir_msg(mensaje msg) {
     printf("Remitente %d\n", msg.int_rte);
     printf("Evento    %d\n", msg.int_evento);
     printf("Mensaje   %s\n", msg.char_mensaje);
+}
+
+// Function to implement substring function in C
+char* substring(char *destination, const char *source, int beg, int n)
+{
+    // extracts `n` characters from the source string starting from `beg` index
+    // and copy them into the destination string
+    while (n > 0)
+    {
+        *destination = *(source + beg);
+ 
+        destination++;
+        source++;
+        n--;
+    }
+ 
+    // null terminate destination string
+    *destination = '\0';
+ 
+    // return the destination string
+    return destination;
+}
+
+// not working correctly!!
+int charIndex(char *string, char charToFind) {
+	char *buffer;
+	buffer = strchr(string, charToFind);
+	return (int)(buffer - string);
+}
+
+void printSeparator() {
+	printf("\n-------------------------------\n");
 }

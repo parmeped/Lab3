@@ -23,32 +23,78 @@ void procesar_evento(int id_cola_mensajes, mensaje msg)
         printf("Error deposito saldo!\n");
         imprimir_msg(msg);
         break;
+    case EVT_RTA_EXTRACCION_OK:
+        printf("Extraccion ok!\n");
+        imprimir_msg(msg);
+        break;
+    case EVT_RTA_EXTRACCION_NOK:
+        printf("Error extraccion!\n");
+        imprimir_msg(msg);
+        break;
     default:
         printf("\nEvento sin definir\n");
         break;
     }
-    printf("------------------------------\n");
+    printSeparator();
 }
 
-int main()
+int main(int argc, char *argv[])
 {
+    int cajeroId = atoi(argv[1]);
+    if (cajeroId < 1)
+    {
+        printf("Error, el Id del cajero debe ser mayor o igual a 1.");
+        return 1;
+    }
+
     int id_cola_mensajes;
     mensaje msg;
     char cadena[CADENA_S];
-    int client = 0;
+    int client = 0, respuesta, cliCode, amount;
     id_cola_mensajes = creo_id_cola_mensajes(CLAVE_BASE);
+    bool salir = false;
 
-    while (1)
+    while (!salir)
     {
-        sprintf(cadena, "%d", client);
-        printf("Consultando saldo para: %s \n", cadena);
-        enviar_mensaje(id_cola_mensajes, MSG_BANCO, MSG_CAJERO, EVT_DEPOSITO, cadena);
-        recibir_mensaje(id_cola_mensajes, MSG_CAJERO, &msg);
+        printf("Seleccione una operacion: [1] consulta, [2] deposito, [3] extraccion, [4] salir.\n");
+        scanf("%d", &respuesta); // TODO: validar que la respuesta existe...
+
+        if (respuesta == 1)
+        {
+            printf("Ingrese codigo de cliente..\n");
+            scanf("%d", &cliCode);
+            sprintf(cadena, "%d", cliCode);
+            enviar_mensaje(id_cola_mensajes, MSG_BANCO, cajeroId, EVT_CONSULTA_SALDO, cadena);
+        }
+        else if (respuesta == 2)
+        {
+            printf("Ingrese codigo de cliente..\n");
+            scanf("%d", &cliCode);
+            printf("Ingrese monto a depositar..\n");
+            scanf("%d", &amount);
+            sprintf(cadena, "%d|%d", cliCode, amount);
+            enviar_mensaje(id_cola_mensajes, MSG_BANCO, cajeroId, EVT_DEPOSITO, cadena);
+        }
+        else if (respuesta == 3)
+        {
+            printf("Ingrese codigo de cliente..\n");
+            scanf("%d", &cliCode);
+            printf("Ingrese monto a extraer..\n");
+            scanf("%d", &amount);
+            sprintf(cadena, "%d|%d", cliCode, amount);
+            enviar_mensaje(id_cola_mensajes, MSG_BANCO, cajeroId, EVT_EXTRACCION, cadena);
+        }
+        else
+        {
+            salir = true;
+            break;
+        }
+        recibir_mensaje(id_cola_mensajes, cajeroId, &msg);
         procesar_evento(id_cola_mensajes, msg);
-        client++;
         usleep(TIEMPO_ESPERA_M * 1000);
     };
 
+    printf("Gracias, vuelvas prontos!");
     borrar_cola(id_cola_mensajes);
     return 0;
 }

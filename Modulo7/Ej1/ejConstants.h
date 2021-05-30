@@ -1,15 +1,14 @@
 #define INTERVALO_PEDIDOS 2000
-#define CLIENT_AMOUNT 100
+#define CLIENT_AMOUNT 20 // TODO: pasar a 100 luego
 #define CLIENT_NAME_TEMPLATE "NombreCliente"
 #define MIN_BALANCE 10
 #define MAX_BALANCE 10000
 
-#define CODE_SEPARATOR = ";"
-#define CODE_CLI_ID "[ClientCode]:"
-#define CODE_BALANCE "[Balance]:"
-#define CODE_AMOUNT "[Amount]:"
-#define CODE_ERROR "[Error]:"
+#define CODE_SEPARATOR ";"
 
+#define ERROR_CLI_NOT_FOUND "El cliente solicitado no existe."
+#define ERROR_AMOUNT_LOWER_ZERO "El monto no puede ser menor o igual a 0."
+#define ERROR_INSUFFICIENT_BALANCE "No hay saldo suficiente para realizar la operacion."
 
 // Eventos
 typedef enum
