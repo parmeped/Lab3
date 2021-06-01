@@ -2,86 +2,61 @@
 #include "EjConstants.h"
 
 pthread_mutex_t mutex;
-int g_control = 0;
-
+bool g_acertaron = false;
 
 void *ThreadJugadores(void *parametro)
 {
-    int cantidad_aciertos = 0;
-    int carton[CANT_CARTON] = {0};
-    int *bolillas;
-    int nro_jugador;
-    int done = 0;
-    int bolilla = 0;
-    int i, j;
+    bool buscarNro = true;
     tjugador *datos_thread = (tjugador *)parametro;
-    nro_jugador = datos_thread->nro_jugador;
-    bolillas = datos_thread->bolillas;
+    int nro_jugador = datos_thread->nro_jugador;
+    int nro_a_adivinar = datos_thread->nro_a_adivinar;
+    int cantidad_intentos = datos_thread->cantidad_intentos;
+    int nro_pensado = 0;
 
-    int encontrado = 0;
+    int tiempoEspera = randomNumber(TIEMPO_MIN, TIEMPO_MAX);
 
-    printf("\nSoy el jugador %d\n", nro_jugador + 1);
+    int array[MAX_RANDOM + 1];
 
-    for (i = 0; i < CANT_CARTON; i++)
+    // Inicializo todos los valores del array en 0. (No utilizado aun). La pos 0 queda sin utilizar.
+    for (int i = 1; i < MAX_RANDOM + 1; i++)
     {
-        encontrado = 0;
-        while (encontrado == 0)
-        {
-            bolilla = rand() % (BOLILLA_HASTA + 1 - BOLILLA_DESDE) + BOLILLA_DESDE;
-            encontrado = 1;
-            for (j = 0; j < CANT_CARTON; j++)
-            {
-                if (bolilla == carton[j])
-                    encontrado = 0;
-            }
-        }
-        carton[i] = bolilla;
+        array[i] = 0;
     }
 
-    while (done == 0)
+    while (!g_acertaron)
     {
         pthread_mutex_lock(&mutex);
-        if (g_control != 0)
+        printf("\nSoy el jugador %d\n", nro_jugador + 1);
+
+        while (buscarNro)
         {
-            g_control--;
-            if (g_carton_lleno == 0)
+            nro_pensado = randomNumberPrevSeed(MIN_RANDOM, MAX_RANDOM, tiempoEspera);
+            printf("Intentando con %d... \n", nro_pensado);
+            if (array[nro_pensado] == 0)
             {
-                for (i = 0; i < CANT_CARTON; i++)
-                {
-                    if (carton[i] != 0)
-                    {
-                        for (j = 0; j < BOLILLA_HASTA; j++)
-                        {
-                            if (carton[i] == bolillas[j] && carton[i] != 0)
-                            {
-                                carton[i] = 0;
-                                cantidad_aciertos++;
-                            }
-                        }
-                    }
-                }
-                printf("JUGADOR %d ", nro_jugador + 1);
-                for (j = 0; j < CANT_CARTON; j++)
-                {
-                    printf(" %02d ", carton[j]);
-                }
-                if (cantidad_aciertos == CANT_CARTON)
-                {
-                    g_carton_lleno = nro_jugador + 1;
-                }
-                printf(" Aciertos=%d g_control=%d g_carton_lleno=%d\n", cantidad_aciertos, g_control, g_carton_lleno);
+                array[nro_pensado] = nro_pensado;
+                buscarNro = false;
             }
             else
             {
-                done = 1;
+                printf("(Jugador %d)Numero ya usado! Buscando otro... \n", nro_jugador + 1);
+                usleep(TIEMPO_ESPERA_XS * 1000);
             }
+        }
+        buscarNro = true;
+        cantidad_intentos++;
+        printf("Intentos=%d \n", cantidad_intentos);
+        if (nro_pensado == nro_a_adivinar) {
+            printf("Acerte! Jugador: %d \n", nro_jugador + 1);
+            datos_thread->ganador = 1;
+            g_acertaron = true;
         }
         pthread_mutex_unlock(&mutex);
 
-        usleep(TIEMPO_COMPRUEBA * 1000);
+        usleep(tiempoEspera * 1000);
     };
 
-    datos_thread->cantidad_aciertos = cantidad_aciertos;
+    datos_thread->cantidad_intentos = cantidad_intentos;
     pthread_exit((void *)"Listo");
 }
 
@@ -90,12 +65,14 @@ int main(int argc, char *argv[])
     int cantJugadores = atoi(argv[1]);
     if (cantJugadores < 1)
     {
-        printf("Error, la cantidad de jugadores debe ser mayor o igual a 1.");
+        printf("Error, la cantidad de jugadores debe ser mayor o igual a 1.\n");
         return 1;
     }
 
-    int numeroPensado = randomNumber(MIN_RANDOM, MAX_RANDOM);
-    bool alguienAcerto = false;
+    printf("Cantidad de jugadores ingresada: %d \n", cantJugadores);
+    int numeroPensado = randomNumberPrevSeed(MIN_RANDOM, MAX_RANDOM, 1);
+    printf("Numero a acertar: %d \n", numeroPensado);
+
     tjugador *datos_thread;
 
     // Thread initiation.
@@ -112,23 +89,25 @@ int main(int argc, char *argv[])
     {
         datos_thread[i].nro_jugador = i;
         datos_thread[i].cantidad_intentos = 0;
+        datos_thread[i].nro_a_adivinar = numeroPensado;
         pthread_create(&idHilo[i], &atributos, ThreadJugadores, &datos_thread[i]);
+        usleep(TIEMPO_ESPERA_M * 1000);
     }
 
-    while (!alguienAcerto)
+    while (!g_acertaron)
     {
-        // No necesario, pero queda sincronizado!
-		pthread_mutex_lock (&mutex);
-        printf("Proceso main esperando");
+        // No necesario, para mostrar que main sigue.
+        // pthread_mutex_lock(&mutex);
+        // printf("Proceso main esperando \n");
+        // pthread_mutex_unlock(&mutex);
         usleep(TIEMPO_ESPERA_M * 1000);
-		pthread_mutex_unlock (&mutex);
     };
 
     for (int i = 0; i < cantJugadores; i++)
     {
         pthread_join(idHilo[i], NULL);
         printf("TERMINO\n");
-        printf("PPAL: Jugador %d: %d intentos \n", i + 1, datos_thread[i].cantidad_intentos);
+        printf("PPAL: Jugador %d: %d intentos. Ganador? %d \n", i + 1, datos_thread[i].cantidad_intentos, datos_thread[i].ganador);
     }
 
     return 0;

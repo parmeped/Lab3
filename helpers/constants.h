@@ -8,9 +8,7 @@
 #define ROJO 0
 #define VERDE 1
 
-#define RANDOM_MIN 1
-#define RANDOM_MAX 99
-
+#define TIEMPO_ESPERA_XXS 50
 #define TIEMPO_ESPERA_XS 150
 #define TIEMPO_ESPERA_S 500
 #define TIEMPO_ESPERA_M 1000
