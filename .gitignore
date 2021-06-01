@@ -1,3 +1,9 @@
 *.dat
 /Modulo5/!*.c
 /Modulo5/!*.h
+/Modulo7/!*.c
+/Modulo7/!*.h
+/Modulo8/!*.c
+/Modulo8/!*.h
+/Modulo9/!*.c
+/Modulo9/!*.h

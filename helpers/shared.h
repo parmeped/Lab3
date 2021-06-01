@@ -8,6 +8,7 @@
 #include <string.h>
 #include <sys/msg.h>
 #include <stdbool.h>
+#include <pthread.h>
 
 #include "constants.h"
 
@@ -102,12 +103,14 @@ void* creo_memoria(int size, int* r_id_memoria, int clave_base)
 
 // ** Random ** //
 
+/* Generates a random number between two ints. */
 int randomNumber(int min, int max)
 {
   	srand(time(NULL));
   	return (rand() % (max - min + 1)) + min;
 }
 
+/* Generates a random number between two ints, accepts a third parameter as an additional seed. */
 int randomNumberPrevSeed(int min, int max, int prevRandSeed)
 
 {
@@ -166,6 +169,7 @@ int borrar_cola(int id_cola) {
 	return msgctl(id_cola, IPC_RMID, NULL);
 }
 
+ /* Imprime un mensaje por pantalla */
 void imprimir_msg(mensaje msg) {
 	printf("Destino   %d\n", (int)msg.long_dest);
     printf("Remitente %d\n", msg.int_rte);
@@ -173,7 +177,7 @@ void imprimir_msg(mensaje msg) {
     printf("Mensaje   %s\n", msg.char_mensaje);
 }
 
-// Function to implement substring function in C
+ /* Substring function */
 char* substring(char *destination, const char *source, int beg, int n)
 {
     // extracts `n` characters from the source string starting from `beg` index
